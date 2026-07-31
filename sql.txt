@@ -1,0 +1,585 @@
+                                             SQL NOTES
+                                             ----------
+DAY1
+
+SQL Server is a Microsoft Relational Database Management System (RDBMS) used to store, manage, retrieve, and secure data efficiently.
+
+Excel stores data in spreadsheets.
+SQL Server stores much larger amounts of data in databases and lets many users access it at the same time efficiently.
+
+sql server datatypes
+
+| Data Type          | Typical Use                       |
+| ------------------ | --------------------------------- |
+| `int`              | IDs, counters                     |
+| `varchar(n)`       | Names, emails, addresses          |
+| `nvarchar(n)`      | Unicode text (multiple languages) |
+| `decimal(p,s)`     | Financial values                  |
+| `bit`              | Boolean values (Yes/No)           |
+| `date`             | Birth dates, order dates          |
+| `datetime2`        | Timestamps                        |
+| `uniqueidentifier` | GUID primary keys                 |
+| `varbinary(max)`   | Documents, images                 |
+
+
+constraints  
+
+
+NOT NULL	Prevents NULL values
+UNIQUE	Prevents duplicate values
+PRIMARY KEY	Uniquely identifies each row
+FOREIGN KEY	Maintains relationship between tables
+CHECK	Restricts values based on a condition
+DEFAULT	Assigns a default value if none is provided
+
+example notnull
+----------------
+
+
+CREATE TABLE Employees
+(
+    EmployeeID INT,
+    EmployeeName VARCHAR(100) NOT NULL,
+    Salary DECIMAL(10,2)
+);
+
+INSERT INTO Employees
+VALUES (1,'Rahul',50000);
+
+INSERT INTO Employees
+VALUES (2,NULL,40000);
+
+UNIQUE Constraint
+-----------------
+CREATE TABLE Customers
+(
+    CustomerID INT,
+    Email VARCHAR(100) UNIQUE,
+    Phone VARCHAR(15) UNIQUE
+);
+
+INSERT INTO Customers
+VALUES
+(1,'abc@gmail.com','9876543210');
+
+INSERT INTO Customers
+VALUES
+(2,'abc@gmail.com','9999999999');
+
+PRIMARY KEY Constraint
+----------------------
+
+CREATE TABLE Students
+(
+    StudentID INT PRIMARY KEY,
+    StudentName VARCHAR(50),
+    Course VARCHAR(30)
+);
+
+INSERT INTO Students
+VALUES (101,'Nagesh','SQL');
+
+INSERT INTO Students
+VALUES (101,'Raj','Python');
+
+FOREIGN KEY Constraint
+----------------------
+
+CREATE TABLE Departments
+(
+    DepartmentID INT PRIMARY KEY,
+    DepartmentName VARCHAR(50)
+);
+
+CREATE TABLE Employees
+(
+    EmployeeID INT PRIMARY KEY,
+    EmployeeName VARCHAR(50),
+    DepartmentID INT,
+    FOREIGN KEY (DepartmentID)
+    REFERENCES Departments(DepartmentID)
+);
+
+INSERT INTO Departments
+VALUES
+(1,'HR'),
+(2,'IT');
+
+INSERT INTO Employees
+VALUES
+(101,'Rahul',1);
+
+INSERT INTO Employees
+VALUES
+(102,'Priya',5);
+
+
+CHECK Constraint
+----------------
+
+CREATE TABLE Employees
+(
+    EmployeeID INT PRIMARY KEY,
+    Age INT CHECK (Age >=18),
+    Salary DECIMAL(10,2) CHECK (Salary >0)
+);
+
+INSERT INTO Employees
+VALUES
+(1,25,50000);
+
+INSERT INTO Employees
+VALUES
+(2,15,30000);
+
+DEFAULT Constraint
+------------------
+CREATE TABLE Orders
+(
+    OrderID INT PRIMARY KEY,
+    OrderDate DATE DEFAULT GETDATE(),
+    Status VARCHAR(20) DEFAULT 'Pending'
+);
+
+INSERT INTO Orders(OrderID)
+VALUES(1001);
+
+
+DQL COMMANDS EXAMPLES
+---------------------
+
+
+
+CREATE TABLE Employees
+(
+    EmpID INT PRIMARY KEY,
+    EmpName VARCHAR(50),
+    Department VARCHAR(30),
+    Salary DECIMAL(10,2),
+    City VARCHAR(30),
+    JoinDate DATE
+);
+
+INSERT INTO Employees VALUES
+(101,'John','IT',65000,'Hyderabad','2023-01-15'),
+(102,'Priya','HR',45000,'Chennai','2022-05-20'),
+(103,'Rahul','Finance',70000,'Bangalore','2021-08-10'),
+(104,'Anjali','IT',80000,'Hyderabad','2020-06-01'),
+(105,'David','Sales',55000,'Mumbai','2023-03-12');
+
+SELECT * FROM Employees;
+
+CREATE TABLE Employees
+(
+   EMPID INT,
+   EMPNAME VARCHAR(50),
+   SALARY DECIMAL,
+   Month Date
+);
+
+SELECT EmpName, Salary
+FROM Employees;
+SELECT *
+FROM Employees
+WHERE Department='IT';
+
+SELECT *
+FROM Employees
+WHERE Department='IT'
+AND Salary >70000;
+
+SELECT *
+FROM Employees
+WHERE City='Hyderabad'
+OR City='Bangalore';
+
+SELECT *
+FROM Employees
+WHERE Salary BETWEEN 50000 AND 70000;
+
+SELECT *
+FROM Employees
+WHERE EmpName LIKE 'A%';
+
+SELECT *
+FROM Employees
+WHERE City IN ('Hyderabad','Chennai');
+
+SELECT *
+FROM Employees
+ORDER BY Salary DESC;
+
+SELECT TOP 3 *
+FROM Employees
+ORDER BY Salary DESC;
+
+SELECT DISTINCT Department
+FROM Employees;
+
+SELECT SUM(Salary) AS TotalSalary
+FROM Employees;
+
+SELECT AVG(Salary) AS AverageSalary
+FROM Employees;
+
+SELECT MAX(Salary)
+FROM Employees;
+
+SELECT MIN(Salary)
+FROM Employees;
+
+SELECT COUNT(*)
+FROM Employees;
+
+SELECT Department,
+       SUM(Salary) AS TotalSalary
+FROM Employees
+GROUP BY Department;
+
+example for sales table
+
+CREATE TABLE Sales (
+    SaleID INT PRIMARY KEY,
+    CustomerName VARCHAR(100),
+    ProductName VARCHAR(100),
+    Category VARCHAR(50),
+    Quantity INT,
+    UnitPrice DECIMAL(10,2),
+    SaleDate DATE,
+    City VARCHAR(50),
+    SalesPerson VARCHAR(100)
+);
+
+INSERT INTO Sales VALUES
+(1,'Ravi','Laptop','Electronics',2,55000,'2026-01-10','Hyderabad','Anil'),
+(2,'Priya','Mouse','Accessories',5,800,'2026-01-12','Hyderabad','Kiran'),
+(3,'Rahul','Keyboard','Accessories',3,1200,'2026-02-15','Bengaluru','Anil'),
+(4,'Sneha','Laptop','Electronics',1,60000,'2026-03-01','Chennai','Raj'),
+(5,'Amit','Monitor','Electronics',2,15000,'2026-03-10','Hyderabad','Kiran'),
+(6,'Pooja','Printer','Electronics',1,12000,'2026-04-05','Bengaluru','Raj'),
+(7,'Kiran','Mouse','Accessories',10,750,'2026-04-12','Chennai','Anil'),
+(8,'Deepa','Laptop','Electronics',1,58000,'2026-05-08','Hyderabad','Raj');
+
+SELECT * FROM Sales;
+
+SELECT CustomerName,ProductName,Quantity FROM Sales;
+
+SELECT *
+FROM Sales
+WHERE City='Hyderabad';
+
+SELECT *
+FROM Sales
+WHERE ProductName='Laptop';
+
+SELECT *
+FROM Sales
+WHERE UnitPrice > 50000;
+
+SELECT *
+FROM Sales
+WHERE City='Hyderabad'
+AND Category='Electronics';
+
+SELECT *
+FROM Sales
+WHERE City='Hyderabad'
+OR City='Bengaluru';
+
+SELECT *
+FROM Sales
+WHERE SaleDate
+BETWEEN '2026-01-01'
+AND '2026-03-31';
+
+SELECT *
+FROM Sales
+WHERE City IN ('Hyderabad','Chennai');
+
+SELECT *
+FROM Sales
+WHERE CustomerName LIKE 'P%';
+
+SELECT *
+FROM Sales
+ORDER BY UnitPrice DESC;
+
+SELECT TOP 5 *
+FROM Sales
+ORDER BY UnitPrice DESC;
+
+SELECT DISTINCT City
+FROM Sales;
+
+SELECT SUM(Quantity * UnitPrice) AS TotalRevenue
+FROM Sales;
+
+SELECT SUM(Quantity) AS TotalQuantity
+FROM Sales;
+
+SELECT AVG(UnitPrice) AS AveragePrice
+FROM Sales;
+
+SELECT MAX(UnitPrice) AS HighestPrice
+FROM Sales;
+
+SELECT MIN(UnitPrice) AS LowestPrice
+FROM Sales;
+
+SELECT COUNT(*) AS TotalOrders
+FROM Sales;
+
+SELECT City,
+       SUM(Quantity * UnitPrice) AS Revenue
+FROM Sales
+GROUP BY City;
+
+SELECT SalesPerson,
+       SUM(Quantity * UnitPrice) AS Revenue
+FROM Sales
+GROUP BY SalesPerson;
+
+SELECT CustomerName,
+       SUM(Quantity * UnitPrice) AS TotalSpent
+FROM Sales
+GROUP BY CustomerName
+HAVING SUM(Quantity * UnitPrice) > 50000;
+
+SELECT MONTH(SaleDate) AS SaleMonth,
+       SUM(Quantity * UnitPrice) AS Revenue
+FROM Sales
+GROUP BY MONTH(SaleDate)
+ORDER BY SaleMonth;
+
+SELECT ProductName,
+       SUM(Quantity) AS TotalSold
+FROM Sales
+GROUP BY ProductName;
+
+SELECT TOP 1
+       ProductName,
+       SUM(Quantity) AS TotalSold
+FROM Sales
+GROUP BY ProductName
+ORDER BY TotalSold DESC;
+
+SELECT SaleID,
+       CustomerName,
+       ProductName,
+       Quantity,
+       UnitPrice,
+       Quantity * UnitPrice AS TotalAmount
+FROM Sales;
+
+SELECT *
+FROM Sales
+WHERE MONTH(SaleDate) >= 4;
+
+SELECT SalesPerson,
+       SUM(Quantity * UnitPrice) AS Revenue
+FROM Sales
+GROUP BY SalesPerson
+ORDER BY Revenue DESC;
+
+SELECT Category,
+       SUM(Quantity * UnitPrice) AS Revenue
+FROM Sales
+WHERE Category='Electronics'
+GROUP BY Category;
+
+SELECT CustomerName,
+       ProductName,
+       SaleDate,
+       Quantity,
+       UnitPrice,
+       Quantity * UnitPrice AS TotalAmount
+FROM Sales
+ORDER BY CustomerName, SaleDate;
+
+DML COMMANDS EXAMPLES
+---------------------
+
+CREATE TABLE Employee
+(
+    EmployeeID INT PRIMARY KEY,
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+    Gender VARCHAR(10),
+    Department VARCHAR(50),
+    Designation VARCHAR(50),
+    Salary DECIMAL(10,2),
+    HireDate DATE,
+    City VARCHAR(50),
+    ManagerID INT,
+    Email VARCHAR(100),
+    Phone VARCHAR(15)
+);
+
+INSERT INTO Employee
+VALUES
+(101,'Rahul','Sharma','Male','HR','HR Executive',35000,'2022-01-10','Hyderabad',201,'rahul@gmail.com','9876543210'),
+
+(102,'Priya','Reddy','Female','IT','Software Engineer',65000,'2021-03-15','Bangalore',202,'priya@gmail.com','9876543211'),
+
+(103,'Amit','Kumar','Male','Finance','Accountant',45000,'2020-06-12','Chennai',203,'amit@gmail.com','9876543212'),
+
+(104,'Sneha','Patel','Female','IT','Senior Developer',85000,'2019-08-25','Hyderabad',202,'sneha@gmail.com','9876543213'),
+
+(105,'Kiran','Rao','Male','Sales','Sales Executive',40000,'2023-02-18','Pune',204,'kiran@gmail.com','9876543214');
+
+UPDATE Employee
+SET Salary = 75000,
+    Designation='Senior Software Engineer'
+WHERE EmployeeID=102;
+
+UPDATE Employee
+SET City='Pune'
+WHERE EmployeeID=104;
+
+UPDATE Employee
+SET Salary = Salary * 1.10
+WHERE Department='IT';
+
+UPDATE Employee
+SET Phone='8888888888'
+WHERE EmployeeID=103;
+
+DELETE FROM Employee
+WHERE EmployeeID=105;
+
+DELETE FROM Employee
+WHERE Department='Intern';
+
+DELETE FROM Employee
+WHERE HireDate='2025-01-01';
+
+CREATE TABLE Employee_New
+(
+EmployeeID INT,
+FirstName VARCHAR(50),
+LastName VARCHAR(50),
+Department VARCHAR(50),
+Salary DECIMAL(10,2)
+);
+
+INSERT INTO Employee_New
+VALUES
+(102,'Priya','Reddy','IT',80000),
+
+(106,'Anjali','Verma','Testing',60000),
+
+(109,'Suresh','Rao','Finance',50000);
+
+MERGE Employee AS Target
+
+USING Employee_New AS Source
+
+ON Target.EmployeeID = Source.EmployeeID
+
+WHEN MATCHED THEN
+
+UPDATE
+SET
+Target.Department=Source.Department,
+Target.Salary=Source.Salary
+
+WHEN NOT MATCHED THEN
+
+INSERT
+(
+EmployeeID,
+FirstName,
+LastName,
+Department,
+Salary
+)
+
+VALUES
+(
+Source.EmployeeID,
+Source.FirstName,
+Source.LastName,
+Source.Department,
+Source.Salary
+);
+
+DDL (Data Definition Language)
+------------------------------
+
+CREATE TABLE Employee
+(
+    EmployeeID INT PRIMARY KEY,
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+    Gender CHAR(1),
+    Age INT,
+    Department VARCHAR(50),
+    Designation VARCHAR(50),
+    Salary DECIMAL(10,2),
+    HireDate DATE,
+    City VARCHAR(50)
+);
+
+INSERT INTO Employee
+VALUES
+(101,'John','Smith','M',28,'IT','Developer',65000,'2022-01-15','Hyderabad'),
+(102,'Priya','Reddy','F',30,'HR','HR Executive',45000,'2021-05-20','Chennai'),
+(103,'Rahul','Kumar','M',35,'Finance','Accountant',55000,'2019-08-18','Bangalore'),
+(104,'Sneha','Patel','F',27,'IT','Tester',48000,'2023-02-12','Pune'),
+(105,'David','Wilson','M',40,'Sales','Manager',85000,'2018-07-25','Mumbai');
+
+ALTER TABLE Employee
+ADD Email VARCHAR(100);
+
+UPDATE Employee
+SET Email='john@company.com'
+WHERE EmployeeID=101;
+
+ALTER TABLE Employee
+ADD
+BloodGroup VARCHAR(5),
+EmergencyContact VARCHAR(15);
+
+Salary DECIMAL(10,2)
+
+ALTER TABLE Employee
+ALTER COLUMN Salary DECIMAL(12,2);
+
+ALTER TABLE Employee
+DROP COLUMN EmergencyContact;
+
+ALTER TABLE Employee
+ADD CONSTRAINT UQ_Email
+UNIQUE(Email);
+
+ALTER TABLE Employee
+ADD Status VARCHAR(20)
+CONSTRAINT DF_Status
+DEFAULT 'Active';
+
+ALTER TABLE Employee
+ADD CONSTRAINT CHK_Salary
+CHECK (Salary > 0);
+
+ALTER TABLE Employee
+ADD CONSTRAINT CHK_Age
+CHECK (Age BETWEEN 18 AND 60);
+
+ALTER TABLE Employee
+DROP CONSTRAINT CHK_Age;
+
+EXEC sp_rename
+'Employee.Department',
+'DepartmentName',
+'COLUMN';
+
+EXEC sp_rename
+'Employee',
+'Employees';
+
+TRUNCATE TABLE Employees;
+
+DROP TABLE Employees;
+
+DROP DATABASE CompanyDB;
+
