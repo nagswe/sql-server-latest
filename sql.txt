@@ -906,4 +906,147 @@ JoiningDate,
 dbo.fn_Experience(JoiningDate) AS Experience
 FROM Employee;
 
+sql server clause
+------------------
+
+1.where :- filter the rows based on cond
+
+2. TOP N :- filter the top number rows in a table
+
+3 group by :- summarize the data
+
+4. having by :- summarize the data we can filter data
+
+5.  order by :- ordering rows asc/desc based on colums
+
+
+CREATE DATABASE SalesDB;
+GO
+
+USE SalesDB;
+GO
+
+CREATE TABLE Sales
+(
+    SaleID INT PRIMARY KEY,
+    SaleDate DATE,
+    CustomerName VARCHAR(100),
+    ProductName VARCHAR(100),
+    Category VARCHAR(50),
+    Quantity INT,
+    UnitPrice DECIMAL(10,2),
+    Region VARCHAR(50),
+    SalesPerson VARCHAR(100)
+);
+
+
+INSERT INTO Sales
+VALUES
+(1, '2026-01-05', 'Ravi',   'Laptop',   'Electronics', 2, 55000, 'Hyderabad', 'Nagesh'),
+(2, '2026-01-10', 'Priya',  'Mobile',   'Electronics', 3, 25000, 'Kakinada',  'Arun'),
+(3, '2026-01-15', 'Rahul',  'Keyboard', 'Accessories', 5, 1500,  'Hyderabad', 'Nagesh'),
+(4, '2026-02-05', 'Anil',   'Laptop',   'Electronics', 1, 60000, 'Vijayawada','Arun'),
+(5, '2026-02-12', 'Sneha',  'Mouse',    'Accessories', 10, 800,  'Kakinada',  'Priya'),
+(6, '2026-02-18', 'Kiran',  'Monitor',  'Electronics', 2, 18000, 'Hyderabad', 'Nagesh'),
+(7, '2026-03-02', 'Suresh', 'Mobile',   'Electronics', 4, 22000, 'Vijayawada','Arun'),
+(8, '2026-03-08', 'Meena',  'Keyboard', 'Accessories', 8, 1300,  'Kakinada',  'Priya'),
+(9, '2026-03-15', 'Raj',    'Laptop',   'Electronics', 3, 58000, 'Hyderabad', 'Nagesh'),
+(10,'2026-03-20', 'Pooja',  'Mouse',    'Accessories', 15, 750,   'Vijayawada','Arun');
+
+SELECT *
+FROM Sales
+WHERE Region = 'Hyderabad';
+
+SELECT *
+FROM Sales
+WHERE Quantity * UnitPrice > 50000;
+
+SELECT 
+    SaleID,
+    CustomerName,
+    ProductName,
+    Quantity * UnitPrice AS TotalSales
+FROM Sales
+ORDER BY TotalSales DESC;
+
+
+ORDER BY TotalSales ASC;
+
+SELECT 
+    Region,
+    SUM(Quantity * UnitPrice) AS TotalSales
+FROM Sales
+GROUP BY Region;
+
+SELECT 
+    Region,
+    SUM(Quantity * UnitPrice) AS TotalSales
+FROM Sales
+GROUP BY Region
+HAVING SUM(Quantity * UnitPrice) > 100000;
+
+WHERE → rows
+HAVING → groups
+
+SELECT DISTINCT Region
+FROM Sales;
+
+SELECT DISTINCT ProductName
+FROM Sales;
+
+SELECT TOP 3
+    CustomerName,
+    ProductName,
+    Quantity * UnitPrice AS TotalSales
+FROM Sales
+ORDER BY TotalSales DESC;
+
+SELECT *
+FROM Sales
+WHERE Quantity * UnitPrice BETWEEN 20000 AND 60000;
+
+SELECT *
+FROM Sales
+WHERE SaleDate BETWEEN '2026-01-01' AND '2026-01-31';
+
+SELECT *
+FROM Sales
+WHERE Region IN ('Hyderabad', 'Kakinada');
+
+WHERE Region = 'Hyderabad'
+   OR Region = 'Kakinada';
+
+SELECT *
+FROM Sales
+WHERE Region NOT IN ('Hyderabad', 'Kakinada');
+
+SELECT *
+FROM Sales
+WHERE SalesPerson IS NULL;
+
+SELECT *
+FROM Sales
+WHERE SalesPerson IS NOT NULL;
+
+
+SELECT CustomerName
+FROM Sales
+WHERE Region = 'Hyderabad'
+
+UNION
+
+SELECT CustomerName
+FROM Sales
+WHERE Region = 'Kakinada';
+
+
+SELECT CustomerName
+FROM Sales
+WHERE Region = 'Hyderabad'
+
+UNION ALL
+
+SELECT CustomerName
+FROM Sales
+WHERE Region = 'Kakinada';
 
