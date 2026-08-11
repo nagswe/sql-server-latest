@@ -1050,3 +1050,126 @@ SELECT CustomerName
 FROM Sales
 WHERE Region = 'Kakinada';
 
+joins
+--------
+
+employee table
+
+CREATE TABLE Employees (
+    EmpID INT PRIMARY KEY,
+    EmpName VARCHAR(50),
+    DeptID INT,
+    Salary DECIMAL(10,2),
+    ManagerID INT
+);
+
+INSERT INTO Employees VALUES
+(101, 'Ravi',   10, 50000, NULL),
+(102, 'Suresh', 20, 60000, 101),
+(103, 'Priya',  10, 55000, 101),
+(104, 'Anil',   30, 70000, 102),
+(105, 'Kiran',  NULL, 45000, 102);
+
+
+department table
+
+
+CREATE TABLE Departments (
+    DeptID INT PRIMARY KEY,
+    DeptName VARCHAR(50),
+    Location VARCHAR(50)
+);
+
+INSERT INTO Departments VALUES
+(10, 'IT',      'Hyderabad'),
+(20, 'HR',      'Bangalore'),
+(30, 'Finance', 'Chennai'),
+(40, 'Sales',   'Mumbai');
+
+
+SELECT 
+    e.EmpID,
+    e.EmpName,
+    d.DeptName,
+    e.Salary
+FROM Employees e
+INNER JOIN Departments d
+    ON e.DeptID = d.DeptID;
+
+
+SELECT 
+    e.EmpID,
+    e.EmpName,
+    d.DeptName,
+    e.Salary
+FROM Employees e
+LEFT JOIN Departments d
+    ON e.DeptID = d.DeptID;
+
+SELECT 
+    e.EmpName,
+    d.DeptID,
+    d.DeptName
+FROM Employees e
+RIGHT JOIN Departments d
+    ON e.DeptID = d.DeptID;
+
+SELECT 
+    e.EmpName,
+    e.DeptID AS EmployeeDeptID,
+    d.DeptID AS DepartmentDeptID,
+    d.DeptName
+FROM Employees e
+FULL OUTER JOIN Departments d
+    ON e.DeptID = d.DeptID;
+
+SELECT
+    e.EmpName AS Employee,
+    m.EmpName AS Manager
+FROM Employees e
+LEFT JOIN Employees m
+    ON e.ManagerID = m.EmpID;
+
+SELECT
+    e.EmpName,
+    d.DeptName
+FROM Employees e
+CROSS JOIN Departments d;
+
+SELECT
+    e.EmpName,
+    e.Salary,
+    d.DeptName
+FROM Employees e
+INNER JOIN Departments d
+    ON e.DeptID = d.DeptID
+WHERE d.DeptName = 'IT';
+
+
+SELECT
+    d.DeptName,
+    COUNT(e.EmpID) AS EmployeeCount
+FROM Departments d
+LEFT JOIN Employees e
+    ON d.DeptID = e.DeptID
+GROUP BY d.DeptName;
+
+SELECT
+    d.DeptName,
+    AVG(e.Salary) AS AverageSalary
+FROM Departments d
+INNER JOIN Employees e
+    ON d.DeptID = e.DeptID
+GROUP BY d.DeptName;
+
+SELECT
+    d.DeptName,
+    AVG(e.Salary) AS AverageSalary
+FROM Departments d
+INNER JOIN Employees e
+    ON d.DeptID = e.DeptID
+GROUP BY d.DeptName
+HAVING AVG(e.Salary) > 55000;
+
+
+
